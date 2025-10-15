@@ -1,0 +1,145 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Progress - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-10 mx-auto">
+        <h2 class="mb-4"><i class="fas fa-chart-line"></i> Your Progress</h2>
+        
+        <!-- Calories Chart -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-fire"></i> Calories Burned vs Consumed (Last 7 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="caloriesChart" height="80"></canvas>
+            </div>
+        </div>
+        
+        <!-- Protein Chart -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-egg"></i> Daily Protein Intake (Last 7 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="proteinChart" height="80"></canvas>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+    // Prepare data from Django
+    const dates = {{ dates|safe }};
+    const workoutCalories = {{ workout_calories|safe }};
+    const mealCalories = {{ meal_calories|safe }};
+    const proteinData = {{ protein_data|safe }};
+    
+    // Format dates for display
+    const formattedDates = dates.map(date => {
+        const d = new Date(date);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    });
+    
+    // Calories Chart
+    const ctxCalories = document.getElementById('caloriesChart').getContext('2d');
+    new Chart(ctxCalories, {
+        type: 'line',
+        data: {
+            labels: formattedDates,
+            datasets: [
+                {
+                    label: 'Calories Burned',
+                    data: workoutCalories,
+                    borderColor: 'rgb(255, 159, 64)',
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Calories Consumed',
+                    data: mealCalories,
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white',
+                        font: { size: 14 }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
+    
+    // Protein Chart
+    const ctxProtein = document.getElementById('proteinChart').getContext('2d');
+    new Chart(ctxProtein, {
+        type: 'bar',
+        data: {
+            labels: formattedDates,
+            datasets: [{
+                label: 'Protein (grams)',
+                data: proteinData,
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white',
+                        font: { size: 14 }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}{{ title }} - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-utensils"></i> {{ title }}</h3>
+                <p class="mb-0 text-white-50">💡 Tip: Use "Quick Add Indian Foods" for instant logging!</p>
+            </div>
+            <div class="card-body">
+                <!-- Quick Link to Indian Foods -->
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-lightbulb"></i> <strong>Don't know the macros?</strong> 
+                    <a href="{% url 'indian_foods' %}" class="alert-link">Use Quick Add Indian Foods</a> 
+                    - One click to add 35+ pre-calculated foods!
+                </div>
+                
+                <form method="POST" id="mealForm">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Meal Type *</label>
+                            {{ form.meal_type }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Food Name *</label>
+                            <input type="text" class="form-control" id="foodSearch" 
+                                   placeholder="Search food... (e.g., Chicken, Dosa, Apple)"
+                                   autocomplete="off">
+                            {{ form.food_name }}
+                            <div id="searchResults" class="search-results"></div>
+                            <small class="text-white-50">
+                                💡 Start typing to search our database of 35+ Indian foods
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Calories *</label>
+                            {{ form.calories }}
+                            <small class="text-white-50">Will auto-fill if you select from search</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Quantity *</label>
+                            {{ form.quantity }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Protein (g) *</label>
+                            {{ form.protein }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Carbs (g) *</label>
+                            {{ form.carbs }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Fats (g) *</label>
+                            {{ form.fats }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Date *</label>
+                            {{ form.date }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Notes</label>
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Save Meal
+                        </button>
+                        <a href="{% url 'meal_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <a href="{% url 'indian_foods' %}" class="btn btn-primary ms-auto">
+                            <i class="fas fa-bolt"></i> Quick Add Instead
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .search-results {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        max-height: 300px;
+        overflow-y: auto;
+        width: 100%;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        margin-top: 5px;
+    }
+    
+    .search-results.show {
+        display: block;
+    }
+    
+    .search-item {
+        padding: 12px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        color: #333;
+        transition: background 0.2s;
+    }
+    
+    .search-item:hover {
+        background: rgba(102, 126, 234, 0.2);
+    }
+    
+    .search-item:last-child {
+        border-bottom: none;
+    }
+    
+    .search-item strong {
+        display: block;
+        color: #000;
+        font-size: 1.05rem;
+    }
+    
+    .search-item small {
+        color: #666;
+    }
+    
+    #foodSearch {
+        position: relative;
+    }
+</style>
+
+<script>
+    // Food database search
+    const foodSearch = document.getElementById('foodSearch');
+    const searchResults = document.getElementById('searchResults');
+    const foodNameInput = document.querySelector('input[name="food_name"]');
+    const caloriesInput = document.querySelector('input[name="calories"]');
+    const proteinInput = document.querySelector('input[name="protein"]');
+    const carbsInput = document.querySelector('input[name="carbs"]');
+    const fatsInput = document.querySelector('input[name="fats"]');
+    
+    // Fetch food database
+    let foodDatabase = [];
+    
+    // Load Indian foods from database
+    fetch('/api/search-foods/')
+        .then(response => response.json())
+        .then(data => {
+            foodDatabase = data.foods;
+        })
+        .catch(error => {
+            console.log('Could not load food database:', error);
+        });
+    
+    // Search functionality
+    foodSearch.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        if (searchTerm.length < 2) {
+            searchResults.classList.remove('show');
+            return;
+        }
+        
+        // Filter foods
+        const matches = foodDatabase.filter(food => 
+            food.name.toLowerCase().includes(searchTerm)
+        );
+        
+        if (matches.length === 0) {
+            searchResults.innerHTML = '<div class="search-item">No foods found. Try "Dosa", "Chicken", "Rice"</div>';
+            searchResults.classList.add('show');
+            return;
+        }
+        
+        // Display results
+        searchResults.innerHTML = matches.slice(0, 5).map(food => `
+            <div class="search-item" data-food='${JSON.stringify(food)}'>
+                <strong>${food.name}</strong>
+                <small>Cal: ${food.calories} | P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fats}g</small>
+            </div>
+        `).join('');
+        
+        searchResults.classList.add('show');
+        
+        // Add click handlers
+        document.querySelectorAll('.search-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const food = JSON.parse(this.dataset.food);
+                
+                // Auto-fill form
+                foodNameInput.value = food.name;
+                foodSearch.value = food.name;
+                caloriesInput.value = food.calories;
+                proteinInput.value = food.protein;
+                carbsInput.value = food.carbs;
+                fatsInput.value = food.fats;
+                
+                // Hide results
+                searchResults.classList.remove('show');
+                
+                // Show success message
+                alert('✅ Macros auto-filled! You can now adjust quantity if needed.');
+            });
+        });
+    });
+    
+    // Hide results when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchResults.contains(e.target) && e.target !== foodSearch) {
+            searchResults.classList.remove('show');
+        }
+    });
+</script>
+{% endblock %}

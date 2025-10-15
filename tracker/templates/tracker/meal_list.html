@@ -1,0 +1,72 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}My Meals - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-10 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-utensils"></i> My Meals</h2>
+            <a href="{% url 'meal_add' %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Log Meal
+            </a>
+        </div>
+        
+        {% if meals %}
+            <div class="row g-4">
+                {% for meal in meals %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span class="badge bg-success mb-2">{{ meal.get_meal_type_display }}</span>
+                                    <h5 class="card-title">
+                                        <i class="fas fa-drumstick-bite text-success"></i> {{ meal.food_name }}
+                                    </h5>
+                                </div>
+                                <form method="POST" action="{% url 'meal_delete' meal.pk %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this meal?');">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="mb-2"><strong>Calories:</strong> {{ meal.calories }}</p>
+                                    <p class="mb-2"><strong>Protein:</strong> {{ meal.protein }}g</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="mb-2"><strong>Carbs:</strong> {{ meal.carbs }}g</p>
+                                    <p class="mb-2"><strong>Fats:</strong> {{ meal.fats }}g</p>
+                                </div>
+                            </div>
+                            
+                            <p class="mb-2"><strong>Quantity:</strong> {{ meal.quantity }}</p>
+                            <p class="mb-2"><strong>Date:</strong> {{ meal.date }}</p>
+                            
+                            {% if meal.notes %}
+                            <p class="card-text mt-3"><em>{{ meal.notes }}</em></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-utensils fa-4x text-muted mb-3"></i>
+                    <h4>No meals logged yet!</h4>
+                    <p class="text-muted">Start tracking your nutrition to see it here.</p>
+                    <a href="{% url 'meal_add' %}" class="btn btn-success mt-3">
+                        <i class="fas fa-plus"></i> Log Your First Meal
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

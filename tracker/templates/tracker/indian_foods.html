@@ -1,0 +1,104 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Indian Foods - Quick Add{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-10 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-utensils"></i> Quick Add Indian Foods</h2>
+            <div>
+                <a href="{% url 'meal_add' %}" class="btn btn-success me-2">
+                    <i class="fas fa-plus"></i> Custom Meal
+                </a>
+                <a href="{% url 'meal_list' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-list"></i> My Meals
+                </a>
+            </div>
+        </div>
+        
+        <p class="lead text-white">Click any food to instantly add it to today's meals!</p>
+        
+        <!-- Breakfast Section -->
+        <div class="mb-5">
+            <h3 class="mb-3"><i class="fas fa-coffee text-warning"></i> Breakfast</h3>
+            <div class="row g-3">
+                {% for food in breakfast_foods %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ food.food_name }}</h6>
+                            <div class="d-flex justify-content-between text-sm mb-2">
+                                <span><strong>Cal:</strong> {{ food.calories }}</span>
+                                <span><strong>P:</strong> {{ food.protein }}g</span>
+                                <span><strong>C:</strong> {{ food.carbs }}g</span>
+                                <span><strong>F:</strong> {{ food.fats }}g</span>
+                            </div>
+                            <a href="{% url 'quick_add_meal' food.pk %}" class="btn btn-sm btn-primary w-100">
+                                <i class="fas fa-plus"></i> Add to Today
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Lunch/Dinner Section -->
+        <div class="mb-5">
+            <h3 class="mb-3"><i class="fas fa-drumstick-bite text-danger"></i> Lunch / Dinner</h3>
+            <div class="row g-3">
+                {% for food in lunch_foods %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ food.food_name }}</h6>
+                            <div class="d-flex justify-content-between text-sm mb-2">
+                                <span><strong>Cal:</strong> {{ food.calories }}</span>
+                                <span><strong>P:</strong> {{ food.protein }}g</span>
+                                <span><strong>C:</strong> {{ food.carbs }}g</span>
+                                <span><strong>F:</strong> {{ food.fats }}g</span>
+                            </div>
+                            <a href="{% url 'quick_add_meal' food.pk %}" class="btn btn-sm btn-success w-100">
+                                <i class="fas fa-plus"></i> Add to Today
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Snacks Section -->
+        <div class="mb-5">
+            <h3 class="mb-3"><i class="fas fa-cookie-bite text-info"></i> Snacks & Beverages</h3>
+            <div class="row g-3">
+                {% for food in snack_foods %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ food.food_name }}</h6>
+                            <div class="d-flex justify-content-between text-sm mb-2">
+                                <span><strong>Cal:</strong> {{ food.calories }}</span>
+                                <span><strong>P:</strong> {{ food.protein }}g</span>
+                                <span><strong>C:</strong> {{ food.carbs }}g</span>
+                                <span><strong>F:</strong> {{ food.fats }}g</span>
+                            </div>
+                            <a href="{% url 'quick_add_meal' food.pk %}" class="btn btn-sm btn-primary w-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                <i class="fas fa-plus"></i> Add to Today
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-sm {
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}

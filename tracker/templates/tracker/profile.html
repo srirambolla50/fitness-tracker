@@ -1,0 +1,110 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}My Profile - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-8 mx-auto">
+        <h2 class="mb-4"><i class="fas fa-user-circle"></i> My Profile</h2>
+        
+        <!-- BMI Card -->
+        {% if profile.bmi %}
+        <div class="card mb-4">
+            <div class="card-header bg-info">
+                <h5><i class="fas fa-heartbeat"></i> Your BMI: {{ profile.bmi }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <i class="fas fa-weight fa-2x text-primary mb-2"></i>
+                        <h6>Weight</h6>
+                        <h4>{{ profile.weight }} kg</h4>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="fas fa-ruler-vertical fa-2x text-success mb-2"></i>
+                        <h6>Height</h6>
+                        <h4>{{ profile.height }} cm</h4>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="fas fa-birthday-cake fa-2x text-warning mb-2"></i>
+                        <h6>Age</h6>
+                        <h4>{{ profile.age }} years</h4>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="fas fa-bullseye fa-2x text-danger mb-2"></i>
+                        <h6>Goal</h6>
+                        <h4>{{ profile.get_fitness_goal_display }}</h4>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h6>BMI Category:</h6>
+                    {% if profile.bmi < 18.5 %}
+                        <div class="alert alert-warning">Underweight - Consider increasing calorie intake</div>
+                    {% elif profile.bmi < 25 %}
+                        <div class="alert alert-success">Normal weight - Keep it up!</div>
+                    {% elif profile.bmi < 30 %}
+                        <div class="alert alert-warning">Overweight - Consider calorie deficit</div>
+                    {% else %}
+                        <div class="alert alert-danger">Obese - Consult a doctor for personalized plan</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Profile Form -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-edit"></i> Update Profile Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Age</label>
+                            {{ form.age }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Fitness Goal</label>
+                            {{ form.fitness_goal }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Weight (kg)</label>
+                            {{ form.weight }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Height (cm)</label>
+                            {{ form.height }}
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Profile
+                    </button>
+                    <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Account Info -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Account Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email|default:"Not provided" }}</p>
+                <p><strong>Member Since:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

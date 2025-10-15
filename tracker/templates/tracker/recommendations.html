@@ -1,0 +1,93 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}AI Recommendations - Fitness Tracker{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-10 mx-auto">
+        <h2 class="mb-4"><i class="fas fa-brain"></i> AI-Powered Recommendations 🤖</h2>
+        
+        <!-- Weekly Summary -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary">
+                <h5><i class="fas fa-chart-bar"></i> Your Weekly Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h4>{{ avg_calories_burned }}</h4>
+                        <p class="mb-0">Avg Calories Burned/Day</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>{{ avg_calories_consumed }}</h4>
+                        <p class="mb-0">Avg Calories Consumed/Day</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>{{ avg_protein }}g</h4>
+                        <p class="mb-0">Avg Protein/Day</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>{{ workout_count }}</h4>
+                        <p class="mb-0">Workouts This Week</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recommendations -->
+        <h4 class="mb-3">Personalized Recommendations:</h4>
+        
+        {% for rec in recommendations %}
+        <div class="card mb-3">
+            <div class="card-header bg-{{ rec.type }}">
+                <h5><i class="fas {{ rec.icon }}"></i> {{ rec.title }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-2"><strong>Analysis:</strong> {{ rec.message }}</p>
+                <p class="mb-0"><strong>Action:</strong> {{ rec.action }}</p>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <!-- Suggested Meals -->
+        {% if profile and profile.fitness_goal == 'gain_muscle' %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-utensils"></i> Suggested High-Protein Meals</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li><strong>Breakfast:</strong> 3 Egg Omelette + 2 Whole Wheat Toast (30g protein)</li>
+                    <li><strong>Lunch:</strong> Chicken Curry (200g) + Rice (150g protein)</li>
+                    <li><strong>Snack:</strong> Paneer (100g) or Protein Shake (25g protein)</li>
+                    <li><strong>Dinner:</strong> Grilled Chicken Breast + Dal + Roti (35g protein)</li>
+                </ul>
+            </div>
+        </div>
+        {% elif profile and profile.fitness_goal == 'lose_weight' %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-leaf"></i> Suggested Low-Calorie Meals</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li><strong>Breakfast:</strong> 2 Idli + Sambar (160 calories)</li>
+                    <li><strong>Lunch:</strong> Dal (150 cal) + 2 Roti (200 cal) + Salad (50 cal)</li>
+                    <li><strong>Snack:</strong> Apple + Chai (110 calories)</li>
+                    <li><strong>Dinner:</strong> Grilled Chicken + Vegetables (300 calories)</li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="{% url 'profile' %}" class="btn btn-primary">
+                <i class="fas fa-user"></i> Update Profile & Goals
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

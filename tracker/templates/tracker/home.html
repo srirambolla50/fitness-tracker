@@ -1,0 +1,326 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}FitTrack Pro - Transform Your Body{% endblock %}
+
+{% block content %}
+{% if not user.is_authenticated %}
+<!-- Hero Section -->
+<div class="row min-vh-100 align-items-center">
+    <div class="col-lg-10 mx-auto">
+        <div class="text-center" style="animation: fadeInUp 0.8s ease;">
+            <div class="mb-4">
+                <span class="badge" style="background: rgba(102, 126, 234, 0.2); color: #667eea; font-size: 0.9rem; padding: 0.75rem 1.5rem;">
+                    <i class="fas fa-sparkles me-2"></i>AI-Powered Fitness Platform
+                </span>
+            </div>
+            
+            <h1 class="display-1 mb-4" style="font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.1;">
+                Transform Your<br>
+                <span style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Body & Mind</span>
+            </h1>
+            
+            <p class="lead mb-5" style="font-size: 1.3rem; max-width: 700px; margin: 0 auto; color: rgba(255,255,255,0.7);">
+                Track workouts, monitor nutrition, and achieve your fitness goals with <strong style="color: #fff;">AI-powered insights</strong>. Join thousands transforming their lives.
+            </p>
+            
+            <div class="d-flex gap-3 justify-content-center flex-wrap mb-5">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket me-2"></i> Start Free Today
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i> Login
+                </a>
+            </div>
+            
+            <div class="row g-4 mt-5 text-start">
+                <div class="col-md-4">
+                    <div class="card h-100" style="animation: fadeInLeft 1s ease;">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3" style="font-size: 3rem;">
+                                <i class="fas fa-dumbbell" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                            </div>
+                            <h4 class="card-title">Smart Tracking</h4>
+                            <p class="card-text">Log workouts, sets, reps with intelligent progress monitoring</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100" style="animation: fadeInUp 1.1s ease;">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3" style="font-size: 3rem;">
+                                <i class="fas fa-utensils" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                            </div>
+                            <h4 class="card-title">Indian Food DB</h4>
+                            <p class="card-text">35+ Indian foods with accurate macros. One-click logging</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100" style="animation: fadeInRight 1.2s ease;">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3" style="font-size: 3rem;">
+                                <i class="fas fa-brain" style="background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                            </div>
+                            <h4 class="card-title">AI Recommendations</h4>
+                            <p class="card-text">Personalized workout and meal suggestions powered by ML</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Dashboard -->
+<div class="row">
+    <div class="col-12">
+        <div class="mb-5" style="animation: fadeInDown 0.6s ease;">
+            <h1 class="display-4 mb-2">Welcome Back, {{ user.username }}! 👋</h1>
+            <p class="lead mb-0" style="color: rgba(255,255,255,0.7);">Let's crush your fitness goals today</p>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card h-100" style="animation: fadeInLeft 0.7s ease;">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3" style="font-size: 2.5rem;">
+                            <i class="fas fa-dumbbell" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                        </div>
+                        <h5 class="card-title mb-3">Workouts</h5>
+                        <a href="{% url 'workout_add' %}" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i> Add Workout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card h-100" style="animation: fadeInUp 0.8s ease;">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3" style="font-size: 2.5rem;">
+                            <i class="fas fa-utensils" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                        </div>
+                        <h5 class="card-title mb-3">Nutrition</h5>
+                        <a href="{% url 'indian_foods' %}" class="btn btn-success w-100">
+                            <i class="fas fa-plus me-2"></i> Add Meal
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card h-100" style="animation: fadeInUp 0.9s ease;">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3" style="font-size: 2.5rem;">
+                            <i class="fas fa-chart-line" style="background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                        </div>
+                        <h5 class="card-title mb-3">Progress</h5>
+                        <a href="{% url 'progress' %}" class="btn btn-primary w-100" style="background: var(--success-gradient);">
+                            <i class="fas fa-eye me-2"></i> View Stats
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card h-100" style="animation: fadeInRight 1s ease;">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3" style="font-size: 2.5rem;">
+                            <i class="fas fa-brain" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                        </div>
+                        <h5 class="card-title mb-3">AI Tips</h5>
+                        <a href="{% url 'recommendations' %}" class="btn btn-primary w-100" style="background: var(--warning-gradient);">
+                            <i class="fas fa-sparkles me-2"></i> Get Insights
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Overview -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card" style="animation: fadeIn 1.1s ease;">
+                    <div class="card-body text-center p-4">
+                        <h2 class="display-4 mb-2" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            {{ total_calories_burned }}
+                        </h2>
+                        <p class="mb-0" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                            <i class="fas fa-fire me-1"></i> Calories Burned Today
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card" style="animation: fadeIn 1.2s ease;">
+                    <div class="card-body text-center p-4">
+                        <h2 class="display-4 mb-2" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            {{ total_calories_consumed }}
+                        </h2>
+                        <p class="mb-0" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                            <i class="fas fa-drumstick-bite me-1"></i> Calories Consumed
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card" style="animation: fadeIn 1.3s ease;">
+                    <div class="card-body text-center p-4">
+                        <h2 class="display-4 mb-2" style="background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            {{ week_workouts }}
+                        </h2>
+                        <p class="mb-0" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                            <i class="fas fa-running me-1"></i> Workouts This Week
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card" style="animation: fadeIn 1.4s ease;">
+                    <div class="card-body text-center p-4">
+                        <h2 class="display-4 mb-2" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            {{ week_meals }}
+                        </h2>
+                        <p class="mb-0" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                            <i class="fas fa-utensils me-1"></i> Meals Logged
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nutrition Breakdown -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card" style="animation: fadeInUp 1.5s ease;">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i> Today's Nutrition Breakdown</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center g-4">
+                            <div class="col-md-3">
+                                <div style="font-size: 2.5rem; margin-bottom: 1rem;">
+                                    <i class="fas fa-egg" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                                </div>
+                                <h3 class="mb-1">{{ total_protein }}g</h3>
+                                <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Protein</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div style="font-size: 2.5rem; margin-bottom: 1rem;">
+                                    <i class="fas fa-bread-slice" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                                </div>
+                                <h3 class="mb-1">{{ total_carbs }}g</h3>
+                                <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Carbs</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div style="font-size: 2.5rem; margin-bottom: 1rem;">
+                                    <i class="fas fa-cheese" style="background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                                </div>
+                                <h3 class="mb-1">{{ total_fats }}g</h3>
+                                <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Fats</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div style="font-size: 2.5rem; margin-bottom: 1rem;">
+                                    <i class="fas fa-balance-scale" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                                </div>
+                                <h3 class="mb-1">{{ total_calories_consumed }}</h3>
+                                <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Total Calories</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Today's Activity -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100" style="animation: fadeInLeft 1.6s ease;">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-dumbbell me-2"></i> Today's Workouts ({{ today_workouts.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if today_workouts %}
+                            {% for workout in today_workouts|slice:":3" %}
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <div>
+                                    <strong style="font-size: 1.05rem;">{{ workout.exercise_name }}</strong><br>
+                                    <small style="color: rgba(255,255,255,0.6);">{{ workout.sets }} sets × {{ workout.reps }} reps</small>
+                                </div>
+                                <div>
+                                    <span class="badge" style="background: var(--warning-gradient); font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        {{ workout.calories_burned }} cal
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% if today_workouts.count > 3 %}
+                            <a href="{% url 'workout_list' %}" class="btn btn-outline-primary w-100 mt-2">
+                                View All {{ today_workouts.count }} Workouts
+                            </a>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-dumbbell fa-3x mb-3" style="opacity: 0.3;"></i>
+                                <p style="color: rgba(255,255,255,0.6); margin-bottom: 1rem;">No workouts logged today</p>
+                                <a href="{% url 'workout_add' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i> Log Your First Workout
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100" style="animation: fadeInRight 1.6s ease;">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-utensils me-2"></i> Today's Meals ({{ today_meals.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if today_meals %}
+                            {% for meal in today_meals|slice:":3" %}
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <div>
+                                    <strong style="font-size: 1.05rem;">{{ meal.food_name }}</strong><br>
+                                    <span class="badge" style="background: var(--success-gradient); font-size: 0.75rem; padding: 0.35rem 0.75rem;">{{ meal.get_meal_type_display }}</span>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge" style="background: var(--secondary-gradient); font-size: 0.9rem; padding: 0.5rem 1rem; display: block; margin-bottom: 0.25rem;">
+                                        {{ meal.calories }} cal
+                                    </span>
+                                    <small style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">
+                                        P:{{ meal.protein }}g C:{{ meal.carbs }}g F:{{ meal.fats }}g
+                                    </small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% if today_meals.count > 3 %}
+                            <a href="{% url 'meal_list' %}" class="btn btn-outline-primary w-100 mt-2">
+                                View All {{ today_meals.count }} Meals
+                            </a>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-utensils fa-3x mb-3" style="opacity: 0.3;"></i>
+                                <p style="color: rgba(255,255,255,0.6); margin-bottom: 1rem;">No meals logged today</p>
+                                <a href="{% url 'indian_foods' %}" class="btn btn-success">
+                                    <i class="fas fa-bolt me-2"></i> Quick Add Meal
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
